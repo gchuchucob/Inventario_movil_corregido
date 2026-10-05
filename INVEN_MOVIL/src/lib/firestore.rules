@@ -1,0 +1,35 @@
+// Pega estas reglas en Firebase Console → Firestore → Reglas
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Usuarios ──────────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── Tiendas ───────────────────────────────────────────────────────────
+    match /stores/{storeId} {
+      allow read, write: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.storeId == storeId;
+
+      // Productos — solo dueño puede escribir, ambos pueden leer
+      match /products/{productId} {
+        allow read: if request.auth != null
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.storeId == storeId;
+        allow write: if request.auth != null
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner'
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.storeId == storeId;
+      }
+
+      // Movimientos — dueño y empleado pueden crear, solo dueño borra
+      match /movements/{movementId} {
+        allow read, create: if request.auth != null
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.storeId == storeId;
+        allow delete: if request.auth != null
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'owner'
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.storeId == storeId;
+      }
+    }
+  }
+}

@@ -1,123 +1,152 @@
 import Layout from '../components/Layout';
-import { UserCircle, Moon, Palette, Store, MapPin, Phone, LogOut, ChevronRight, Edit2 } from 'lucide-react';
+import {
+  UserCircle, Moon, Sun, Store, MapPin, Phone,
+  LogOut, ChevronRight, Edit2, Users,
+} from 'lucide-react';
+import { useDarkMode } from '../hooks/useDarkMode';
+import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function Settings() {
+  const { isDark, toggle } = useDarkMode();
+  const { appUser, store, logout } = useAuth();
+  const isOwner = appUser?.role === 'owner';
+
   return (
-    <Layout title="Azure Ledger">
-      {/* Page Title Editorial */}
+    <Layout title="Configuración">
       <div className="mb-8">
-        <p className="font-label text-[12px] uppercase tracking-[0.2em] text-blue-700 font-bold mb-1">PREFERENCIAS</p>
-        <h2 className="text-3xl font-extrabold tracking-tight text-on-surface font-sans">Configuración</h2>
+        <p className="font-label text-[12px] uppercase tracking-[0.2em] text-primary font-bold mb-1">PREFERENCIAS</p>
+        <h2 className="text-3xl font-extrabold tracking-tight text-on-surface">Configuración</h2>
       </div>
 
-      {/* Settings Sections */}
       <div className="space-y-6">
-        
-        {/* Section: Account */}
+
+        {/* Cuenta */}
         <section>
           <h3 className="font-label text-sm font-semibold text-on-surface-variant mb-3 px-1">Cuenta</h3>
           <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
-            <div className="flex items-center justify-between p-4 hover:bg-surface-container-low cursor-pointer border-b border-surface-container active:scale-[0.98] transition-transform">
+            <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 flex items-center justify-center bg-primary-fixed rounded-lg">
                   <UserCircle className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-[15px] font-bold text-on-surface">Estado de cuenta</p>
-                  <p className="text-xs text-on-surface-variant">Vinculada con Google</p>
+                  <p className="text-[15px] font-bold text-on-surface">{appUser?.displayName ?? 'Usuario'}</p>
+                  <p className="text-xs text-on-surface-variant">{appUser?.email}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-label font-medium text-blue-700 bg-blue-50 px-2 py-1 rounded-md">Activo</span>
-                <ChevronRight className="w-5 h-5 text-outline-variant" />
-              </div>
+              <span className={`text-xs font-label font-bold px-2 py-1 rounded-md ${
+                isOwner
+                  ? 'text-blue-700 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/30'
+                  : 'text-emerald-700 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-900/30'
+              }`}>
+                {isOwner ? 'Dueño' : 'Empleado'}
+              </span>
             </div>
           </div>
         </section>
 
-        {/* Section: Personalization */}
+        {/* Tienda (solo dueño) */}
+        {isOwner && store && (
+          <section>
+            <h3 className="font-label text-sm font-semibold text-on-surface-variant mb-3 px-1">Mi Tienda</h3>
+            <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+              <div className="flex items-center justify-between p-4 border-b border-surface-container">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 flex items-center justify-center bg-tertiary-fixed rounded-lg">
+                    <Store className="w-6 h-6 text-tertiary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-on-surface-variant font-label mb-0.5">Nombre</p>
+                    <p className="text-[15px] font-bold text-on-surface">{store.name}</p>
+                  </div>
+                </div>
+                <Edit2 className="w-5 h-5 text-outline-variant" />
+              </div>
+              {store.address && (
+                <div className="flex items-center gap-4 p-4 border-b border-surface-container">
+                  <div className="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-lg">
+                    <MapPin className="w-6 h-6 text-on-surface-variant" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-on-surface-variant font-label mb-0.5">Dirección</p>
+                    <p className="text-[14px] font-medium text-on-surface">{store.address}</p>
+                  </div>
+                </div>
+              )}
+              {store.phone && (
+                <div className="flex items-center gap-4 p-4">
+                  <div className="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-lg">
+                    <Phone className="w-6 h-6 text-on-surface-variant" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-on-surface-variant font-label mb-0.5">Teléfono</p>
+                    <p className="text-[15px] font-bold text-on-surface">{store.phone}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Gestión de empleados (solo dueño) */}
+        {isOwner && (
+          <section>
+            <h3 className="font-label text-sm font-semibold text-on-surface-variant mb-3 px-1">Equipo</h3>
+            <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+              <Link to="/users"
+                className="flex items-center justify-between p-4 hover:bg-surface-container-low active:scale-[0.98] transition-all">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 flex items-center justify-center bg-secondary-container rounded-lg">
+                    <Users className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-[15px] font-bold text-on-surface">Gestionar empleados</p>
+                    <p className="text-xs text-on-surface-variant">Invita o elimina accesos por correo</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-outline-variant" />
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {/* Apariencia — toggle dark mode FUNCIONAL */}
         <section>
-          <h3 className="font-label text-sm font-semibold text-on-surface-variant mb-3 px-1">Personalización</h3>
+          <h3 className="font-label text-sm font-semibold text-on-surface-variant mb-3 px-1">Apariencia</h3>
           <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
-            <div className="p-4 flex items-center justify-between border-b border-surface-container">
+            <div className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 flex items-center justify-center bg-secondary-container rounded-lg">
-                  <Moon className="w-6 h-6 text-secondary" />
+                  {isDark ? <Moon className="w-6 h-6 text-secondary" /> : <Sun className="w-6 h-6 text-secondary" />}
                 </div>
                 <div>
                   <p className="text-[15px] font-bold text-on-surface">Modo Oscuro</p>
-                  <p className="text-xs text-on-surface-variant">Alternar apariencia visual</p>
+                  <p className="text-xs text-on-surface-variant">{isDark ? 'Activado' : 'Desactivado'}</p>
                 </div>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-              </label>
-            </div>
-            
-            <div className="flex items-center justify-between p-4 hover:bg-surface-container-low cursor-pointer active:scale-[0.98] transition-transform">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-lg">
-                  <Palette className="w-6 h-6 text-on-surface-variant" />
-                </div>
-                <div>
-                  <p className="text-[15px] font-bold text-on-surface">Tema de Interfaz</p>
-                  <p className="text-xs text-on-surface-variant">Azure Ledger Classic</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-outline-variant" />
+              <button
+                role="switch"
+                aria-checked={isDark}
+                onClick={toggle}
+                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none ${
+                  isDark ? 'bg-primary' : 'bg-surface-container-highest'
+                }`}
+              >
+                <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                  isDark ? 'translate-x-6' : 'translate-x-1'
+                }`} />
+              </button>
             </div>
           </div>
         </section>
 
-        {/* Section: Store Information */}
-        <section>
-          <h3 className="font-label text-sm font-semibold text-on-surface-variant mb-3 px-1">Información de la Tienda</h3>
-          <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
-            <div className="flex items-center justify-between p-4 hover:bg-surface-container-low cursor-pointer border-b border-surface-container active:scale-[0.98] transition-transform">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center bg-tertiary-fixed rounded-lg">
-                  <Store className="w-6 h-6 text-tertiary" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-on-surface-variant font-label mb-0.5">Nombre Comercial</p>
-                  <p className="text-[15px] font-bold text-on-surface">Azure Global Logistics S.A.</p>
-                </div>
-              </div>
-              <Edit2 className="w-5 h-5 text-outline-variant" />
-            </div>
-            
-            <div className="flex items-center justify-between p-4 hover:bg-surface-container-low cursor-pointer border-b border-surface-container active:scale-[0.98] transition-transform">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-lg">
-                  <MapPin className="w-6 h-6 text-on-surface-variant" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-on-surface-variant font-label mb-0.5">Dirección</p>
-                  <p className="text-[14px] font-medium text-on-surface">Av. Central 452, Ciudad de Panamá</p>
-                </div>
-              </div>
-              <MapPin className="w-5 h-5 text-outline-variant" />
-            </div>
-            
-            <div className="flex items-center justify-between p-4 hover:bg-surface-container-low cursor-pointer active:scale-[0.98] transition-transform">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-lg">
-                  <Phone className="w-6 h-6 text-on-surface-variant" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-on-surface-variant font-label mb-0.5">Teléfono de Contacto</p>
-                  <p className="text-[15px] font-bold text-on-surface">+507 234-5678</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-outline-variant" />
-            </div>
-          </div>
-        </section>
-
-        {/* Danger Zone */}
-        <section className="mt-4">
-          <button className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border border-error/20 bg-error-container/10 text-error font-bold text-[15px] active:scale-95 transition-all">
+        {/* Cerrar sesión */}
+        <section className="mt-4 pb-6">
+          <button
+            onClick={() => logout()}
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border border-error/20 bg-error-container/10 text-error font-bold text-[15px] active:scale-95 transition-all"
+          >
             <LogOut className="w-5 h-5" />
             Cerrar Sesión
           </button>

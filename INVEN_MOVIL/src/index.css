@@ -1,44 +1,90 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* ── Tema claro (por defecto) ─────────────────────────────────────────────── */
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-label: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:  "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Inter",   ui-sans-serif, system-ui, sans-serif;
 
-  --color-primary: #00488d;
-  --color-primary-container: #005fb8;
-  --color-on-primary: #ffffff;
-  --color-on-primary-container: #cadcff;
-  --color-primary-fixed: #d6e3ff;
-  --color-on-primary-fixed: #001b3d;
-  --color-on-primary-fixed-variant: #00468b;
-  
-  --color-secondary: #4e5f78;
-  --color-secondary-container: #cfe1fe;
-  --color-on-secondary-container: #53647d;
-  
-  --color-tertiary: #7b3200;
-  --color-tertiary-container: #a04401;
-  --color-tertiary-fixed: #ffdbcb;
-  --color-on-tertiary-fixed: #341100;
+  --color-primary:                   #00488d;
+  --color-primary-container:         #005fb8;
+  --color-on-primary:                #ffffff;
+  --color-on-primary-container:      #cadcff;
+  --color-primary-fixed:             #d6e3ff;
+  --color-on-primary-fixed:          #001b3d;
+  --color-on-primary-fixed-variant:  #00468b;
+
+  --color-secondary:                 #4e5f78;
+  --color-secondary-container:       #cfe1fe;
+  --color-on-secondary-container:    #53647d;
+
+  --color-tertiary:                  #7b3200;
+  --color-tertiary-container:        #a04401;
+  --color-tertiary-fixed:            #ffdbcb;
+  --color-on-tertiary-fixed:         #341100;
   --color-on-tertiary-fixed-variant: #783100;
-  --color-tertiary-fixed-dim: #ffb691;
-  
-  --color-error: #ba1a1a;
-  --color-error-container: #ffdad6;
-  --color-on-error: #ffffff;
-  
-  --color-surface: #f8f9fa;
-  --color-on-surface: #191c1d;
-  --color-on-surface-variant: #424752;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f3f4f5;
-  --color-surface-container: #edeeef;
-  --color-surface-container-high: #e7e8e9;
+  --color-tertiary-fixed-dim:        #ffb691;
+
+  --color-error:                     #ba1a1a;
+  --color-error-container:           #ffdad6;
+  --color-on-error:                  #ffffff;
+  --color-on-error-container:        #410002;
+
+  --color-surface:                   #f8f9fa;
+  --color-on-surface:                #191c1d;
+  --color-on-surface-variant:        #424752;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-low:     #f3f4f5;
+  --color-surface-container:         #edeeef;
+  --color-surface-container-high:    #e7e8e9;
   --color-surface-container-highest: #e1e3e4;
-  
-  --color-outline: #727783;
-  --color-outline-variant: #c2c6d4;
+
+  --color-outline:                   #727783;
+  --color-outline-variant:           #c2c6d4;
+}
+
+/* ── Tema oscuro: activo cuando <html class="dark"> ──────────────────────── */
+:root.dark {
+  --color-primary:                   #aac7ff;
+  --color-primary-container:         #004a9c;
+  --color-on-primary:                #002f6b;
+  --color-on-primary-container:      #d6e3ff;
+  --color-primary-fixed:             #d6e3ff;
+  --color-on-primary-fixed:          #001b3d;
+  --color-on-primary-fixed-variant:  #aac7ff;
+
+  --color-secondary:                 #b3c8e8;
+  --color-secondary-container:       #364759;
+  --color-on-secondary-container:    #cfe1fe;
+
+  --color-tertiary:                  #ffb691;
+  --color-tertiary-container:        #5f2500;
+  --color-tertiary-fixed:            #3a1800;
+  --color-on-tertiary-fixed:         #ffdbcb;
+  --color-on-tertiary-fixed-variant: #ffb691;
+  --color-tertiary-fixed-dim:        #ff8d52;
+
+  --color-error:                     #ffb4ab;
+  --color-error-container:           #93000a;
+  --color-on-error:                  #690005;
+  --color-on-error-container:        #ffdad6;
+
+  --color-surface:                   #111318;
+  --color-on-surface:                #e2e2e9;
+  --color-on-surface-variant:        #c4c6d0;
+  --color-surface-container-lowest:  #0c0e13;
+  --color-surface-container-low:     #191c22;
+  --color-surface-container:         #1d2026;
+  --color-surface-container-high:    #272a30;
+  --color-surface-container-highest: #32343a;
+
+  --color-outline:                   #8e9099;
+  --color-outline-variant:           #44474e;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+html {
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 body {
@@ -47,10 +93,9 @@ body {
   color: var(--color-on-surface);
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
+/* ── Utilidades ───────────────────────────────────────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
